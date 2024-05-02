@@ -31,15 +31,22 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         Button send_button = findViewById(R.id.button_gchat_send);
         send_button.setOnClickListener(this);
 
+        mMessageAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                mMessageRecycler.smoothScrollToPosition(mMessageAdapter.getItemCount());
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         EditText editText = findViewById(R.id.edit_gchat_message);
 
-
         //Your Logic
         String messageText = editText.getText().toString();
+        if(messageText.isEmpty()) return;
         UserMessage message;
         message = new UserMessage(messageText, MessageListAdapter.Sender.USER);
         messageList.add(message);
@@ -57,6 +64,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         message = new UserMessage("Sorry, I don't have functionality to answer at the moment.", MessageListAdapter.Sender.BOT);
         messageList.add(message);
         mMessageAdapter.notifyItemInserted(messageList.size() - 1);
+
     }
 
 }
